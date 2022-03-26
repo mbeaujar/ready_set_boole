@@ -1,5 +1,4 @@
 #include <bitset>
-#include <cstdlib>
 #include <iostream>
 
 // https://www.geeksforgeeks.org/bitwise-operators-in-c-cpp/

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAME=adder
+NAME=multiplier
 
 if [ ! -f ./$NAME ]; then
 	make
@@ -11,7 +11,7 @@ do
 	NB1=$RANDOM
 	NB2=$RANDOM
 	./$NAME $NB1 $NB2 > mine
-	echo $(($NB1 + $NB2)) > real
+	echo $(($NB1 * $NB2)) > real
 	diff mine real >> result.log
 done
 
