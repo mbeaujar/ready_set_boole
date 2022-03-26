@@ -1,4 +1,5 @@
 #include <bitset>
+#include <cstdlib>
 #include <iostream>
 
 // https://www.geeksforgeeks.org/bitwise-operators-in-c-cpp/
@@ -35,6 +36,8 @@ int adderV1(int num1, int num2) {
   return sum;
 }
 
+// https://en.wikipedia.org/wiki/Adder_%28electronics%29#Half_adder
+
 // Inputs |	Outputs
 //  A	 B	|  C	S
 //  0	 0	|  0	0
@@ -61,10 +64,15 @@ int adder(int num1, int num2) {
   return sum;
 }
 
-int main() {
-  int num1 = 80, num2 = 1000;
+int main(int ac, char **av) {
+  if (ac != 3) {
+    std::cerr << "Wrong number of arguments" << std::endl;
+    std::cerr << "expected: ./adder [number] [number]" << std::endl;
+    return 1;
+  }
+  int num1 = atoi(av[1]), num2 = atoi(av[2]);
 
-  std::cout << adder(num1, num2);
+  std::cout << adder(num1, num2) << std::endl;
 
   return 0;
 }
