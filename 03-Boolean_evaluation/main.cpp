@@ -70,7 +70,13 @@ int main(int ac, char** av) {
     std::cerr << "Wrong number of arguments" << std::endl;
     return 1;
   }
-  std::string expression = av[1];
-  std::cout << std::boolalpha << eval_formula(expression) << std::endl;
+
+  (void)av[1];
+  // ASTree* tree = new ASTree();
+  // tree->insertNode('+', 1, 2);
+  // std::cout << tree->value() << std::endl;
+  // delete tree;
+  // std::string expression = av[1];
+  // std::cout << std::boolalpha << eval_formula(expression) << std::endl;
   return 0;
 }
