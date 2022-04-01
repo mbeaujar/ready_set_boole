@@ -3,6 +3,10 @@
 
 #include <iostream>
 
+#include "BinOpNode.hpp"
+#include "ConstNode.hpp"
+#include "ExpNode.hpp"
+
 class ASTree {
   ExpNode* _root;
 

@@ -10,7 +10,7 @@ class ExpNode {
  public:
   ExpNode(Type);
   ExpNode(const ExpNode&);
-  virtual ~ExpNode() {}
+  virtual ~ExpNode();
   ExpNode& operator=(const ExpNode&);
 
   virtual bool value() = 0;

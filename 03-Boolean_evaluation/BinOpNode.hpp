@@ -9,8 +9,7 @@ class BinOpNode : public ExpNode {
   ExpNode *_right;
 
  public:
-  BinOpNode(char op, ExpNode *left, ExpNode *right)
-      : ExpNode(BINOP), _op(op), _left(left), _right(right) {}
+  BinOpNode(char, ExpNode *, ExpNode *);
   BinOpNode(const BinOpNode &);
   ~BinOpNode();
   BinOpNode &operator=(const BinOpNode &);

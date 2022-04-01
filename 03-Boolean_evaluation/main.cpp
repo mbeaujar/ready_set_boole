@@ -5,6 +5,8 @@
 
 #include "ASTree.hpp"
 
+bool display;
+
 bool isBinOp(char c) {
   return c == '&' || c == '|' || c == '>' || c == '=' || c == '^' || c == '!';
 }
@@ -19,7 +21,7 @@ bool eval_formula(std::string& str) {
     if (str[i] == '0' || str[i] == '1') {
       values.push_back(str[i] - 48);
     } else if (isBinOp(str[i])) {
-      if (values.size() < 1 || values.size() == 1 && first == true) {
+      if (values.size() < 1 || (values.size() == 1 && first == true)) {
         std::cerr << "invalid number of values before operator" << std::endl;
         exit(1);
       }
@@ -42,14 +44,24 @@ bool eval_formula(std::string& str) {
       exit(1);
     }
   }
-  // tree.printAST();
+  if (display) tree.printAST();
   return tree.value();
 }
 
 int main(int ac, char** av) {
-  if (ac != 2) {
+  display = false;
+
+  if (ac < 2 || ac > 3) {
     std::cerr << "Wrong number of arguments" << std::endl;
     return 1;
+  }
+  if (ac == 3) {
+    if (std::string(av[2]) != "-d") {
+      std::cerr << "Wrong argument" << std::endl;
+      std::cerr << "-d display AST" << std::endl;
+      return 1;
+    }
+    display = true;
   }
   std::string expression = av[1];
   std::cout << eval_formula(expression) << std::endl;
