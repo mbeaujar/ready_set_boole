@@ -1,5 +1,9 @@
 NAME=evaluation
-OBJS=main.o
+OBJS=main.o \
+	ASTree.o \
+	BinOpNode.o \
+	ConstNode.o \
+	ExpNode.o 
 CXX=clang++
 RM=rm -rf
 CXXFLAGS=-Wall -Wextra -Werror
@@ -18,4 +22,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all $(NAME) clean fclean re
+# .PHONY: all $(NAME) clean fclean re
