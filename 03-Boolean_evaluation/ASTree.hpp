@@ -20,6 +20,22 @@ class ASTree {
     }
   }
 
+  void printNode(std::string prefix, ExpNode* node, bool isLeft) {
+    if (node != nullptr) {
+      std::cout << prefix;
+      std::cout << (isLeft ? "├──" : "└──");
+      ConstNode* tmp = dynamic_cast<ConstNode*>(node);
+      if (tmp) {
+        std::cout << tmp->value() << std::endl;
+      } else {
+        BinOpNode* op = dynamic_cast<BinOpNode*>(node);
+        std::cout << "[" << op->ope() << "]" << std::endl;
+        printNode(prefix + (isLeft ? "|  " : "   "), op->getLeft(), true);
+        printNode(prefix + (isLeft ? "|  " : "   "), op->getRight(), false);
+      }
+    }
+  }
+
  public:
   ASTree() : _root(nullptr){};
   ~ASTree() { deleteAST(_root); };
@@ -38,6 +54,8 @@ class ASTree {
   }
 
   int value() { return _root->value(); }
+
+  void printAST() { printNode("", _root, false); }
 };
 
 #endif  // _ASTREE_HPP_

@@ -63,6 +63,7 @@ class BinOpNode : public ExpNode {
   }
 
   Type type() { return _type; }
+  char ope() { return _op; }
 
   ExpNode *getLeft() { return _left; }
   ExpNode *getRight() { return _right; }
