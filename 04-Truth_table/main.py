@@ -6,7 +6,7 @@ def print_truth_table(formula: str):
     try:
         tree = Ast()
         tree.parse_expression(formula)
-        # tree.print()
+        tree.print()
         tree.print_truth_table()
     except Exception as e:
         print(e)

@@ -1,9 +1,13 @@
+from operator import neg
+
+
 class InvalidToken(Exception):
     pass
 
 
 OPERATOR = 0
 LETTER = 1
+NEGATION = 2
 
 
 class BinOp:
@@ -26,16 +30,22 @@ class BinOp:
             return self.left.get_value() ^ self.right.get_value()
 
 
+class NegOp:
+    def __init__(self, child):
+        self.child = child
+        self.type = NEGATION
+
+    def get_value(self):
+        return int(not(self.child.get_value()))
+
+
 class Letter:
     def __init__(self, name, value):
         self.name = name
         self.value = value
         self.type = LETTER
-        self.negation = False
 
     def get_value(self):
-        if self.negation == True:
-            return not(self.value)
         return self.value
 
 
@@ -44,36 +54,55 @@ class Ast:
         self.values = []
         self.letters = []
         self.first = True
-        self.negation = False
         self.root = None
+        self.first_neg = False
+        self.second_neg = False
+
+    def __negation_letter(self, letter):
+        if len(self.values) == 2 and self.first_neg == False:
+            return letter
+        if self.first_neg == True:
+            self.first_neg = False
+            return NegOp(letter)
+        if len(self.values) == 1 and self.second_neg == True:
+            self.second_neg = False
+            return NegOp(letter)
+        return letter
 
     def __add_letter(self) -> Letter:
         for i in range(len(self.letters)):
             if self.letters[i].name == self.values[0]:
-                if self.negation == True:
-                    self.letters[i].negation = True
-                    self.negation = False
+                if self.first_neg == True or self.second_neg == True:
+                    return self.__negation_letter(self.letters[i])
                 self.values.pop(0)
                 return self.letters[i]
         new_letter = Letter(self.values[0], 0)
-        if self.negation == True:
-            new_letter.negation = True
-            self.negation = False
-        self.values.pop(0)
         self.letters.append(new_letter)
+        if self.first_neg == True or self.second_neg == True:
+            new_letter = self.__negation_letter(new_letter)
+        self.values.pop(0)
         return new_letter
 
     def parse_expression(self, expression):
         for c in expression:
             if c in "|&>=^!+":
                 values_len = len(self.values)
-                if values_len == 0 or (values_len == 1 and self.first == True and c != '!'):
-                    raise InvalidToken("expression can't begin by an operator")
-                if self.first == False and c != '!':
+                if (values_len == 0 and c != '!') or (values_len == 1 and self.first == True and c != '!'):
+                    raise InvalidToken("invalid operator")
+                if c == '!':
+                    if self.root == None:
+                        if values_len > 0:
+                            if values_len == 1:
+                                self.first_neg = not(self.first_neg)
+                            else:
+                                self.second_neg = not(self.second_neg)
+                        else:
+                            raise InvalidToken("invalid operator")
+                    else:
+                        self.root = NegOp(self.root)
+                elif self.first == False:
                     new_letter = self.__add_letter()
                     self.root = BinOp(c, self.root, new_letter)
-                elif c == '!':
-                    self.negation = True
                 else:
                     first_letter = self.__add_letter()
                     second_letter = self.__add_letter()
@@ -122,9 +151,13 @@ class Ast:
                 print("└──", end="")
             if node.type == LETTER:
                 print("[" + str(node.name) + "]")
-            else:
+            elif node.type == OPERATOR:
                 print("[" + node.operator + "]")
                 self.__print_node(
                     prefix + ("|  " if is_left == True else "   "), node.left, True)
                 self.__print_node(
                     prefix + ("|  " if is_left == True else "   "), node.right, False)
+            else:
+                print("[-]")
+                self.__print_node(
+                    prefix + ("|  " if is_left == True else "   "), node.child, False)

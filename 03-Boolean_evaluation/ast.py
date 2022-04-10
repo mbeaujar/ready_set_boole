@@ -25,7 +25,15 @@ class BinOp:
             return self.left.get_value() == self.right.get_value()
         elif self.operator == '^':
             return self.left.get_value() ^ self.right.get_value()
-        # elif self.operator == '!':
+
+
+class NegOp:
+    def __init__(self, child):
+        self.child = child
+        self.type = OPERATOR
+
+    def get_value(self):
+        return not(self.child.get_value())
 
 
 class Number:
@@ -47,13 +55,19 @@ class Ast:
         for c in expression:
             if c in "|&>=^!+":
                 values_len = len(self.values)
-                if values_len == 0 or (values_len == 1 and self.first == True and c != '!'):
+                if (values_len == 0 and c != '!') or (values_len == 1 and self.first == True and c != '!'):
                     raise InvalidToken("invalid operator")
-                if self.first == False and c != '!':
+                if c == '!':
+                    if self.root == None:
+                        if values_len > 0:
+                            self.values[0] = not(self.values[0])
+                        else:
+                            raise InvalidToken("invalid operator")
+                    else:
+                        self.root = NegOp(self.root)
+                elif self.first == False:
                     self.root = BinOp(c, self.root, Number(self.values[0]))
                     self.values.pop(0)
-                elif c == '!':
-                    self.values[0] = 0 if self.values[0] == 1 else 1
                 else:
                     self.root = BinOp(
                         c, Number(self.values[0]), Number(self.values[1]))
