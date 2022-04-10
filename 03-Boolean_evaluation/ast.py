@@ -48,8 +48,8 @@ class Ast:
             if c in "|&>=^!+":
                 values_len = len(self.values)
                 if values_len == 0 or (values_len == 1 and self.first == True and c != '!'):
-                    raise InvalidToken("expression can't begin by an operator")
-                if self.first == False:
+                    raise InvalidToken("invalid operator")
+                if self.first == False and c != '!':
                     self.root = BinOp(c, self.root, Number(self.values[0]))
                     self.values.pop(0)
                 elif c == '!':

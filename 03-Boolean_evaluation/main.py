@@ -16,7 +16,9 @@ def main(argv):
     if len(argv) != 2:
         print("Wrong number of argument")
         return 1
-    print(eval_formula(argv[1]))
+    ret = eval_formula(argv[1])
+    if ret != None:
+        print(ret)
     return 0
 
 

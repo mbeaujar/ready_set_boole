@@ -32,8 +32,11 @@ class Letter:
         self.name = name
         self.value = value
         self.type = LETTER
+        self.negation = False
 
     def get_value(self):
+        if self.negation == True:
+            return not(self.value)
         return self.value
 
 
@@ -42,15 +45,21 @@ class Ast:
         self.values = []
         self.letters = []
         self.first = True
+        self.negation = False
         self.root = None
 
     def __add_letter(self) -> Letter:
         for i in range(len(self.letters)):
             if self.letters[i].name == self.values[0]:
+                if self.negation == True:
+                    self.letters[i].negation = True
+                    self.negation = False
                 self.values.pop(0)
                 return self.letters[i]
-        # print("name", name)
         new_letter = Letter(self.values[0], 0)
+        if self.negation == True:
+            new_letter.negation = True
+            self.negation = False
         self.values.pop(0)
         self.letters.append(new_letter)
         return new_letter
@@ -59,11 +68,13 @@ class Ast:
         for c in expression:
             if c in "|&>=^!+":
                 values_len = len(self.values)
-                if values_len == 0 or (values_len == 1 and self.first == True):
+                if values_len == 0 or (values_len == 1 and self.first == True and c != '!'):
                     raise InvalidToken("expression can't begin by an operator")
-                if self.first == False:
+                if self.first == False and c != '!':
                     new_letter = self.__add_letter()
                     self.root = BinOp(c, self.root, new_letter)
+                elif c == '!':
+                    self.negation = True
                 else:
                     first_letter = self.__add_letter()
                     second_letter = self.__add_letter()
@@ -85,22 +96,13 @@ class Ast:
         print("|", end=" ")
         for i in range(letters_len):
             print(self.letters[i].name, end=" | ")
-        # print("= |", end="\n|")
-        # for i in range(letters_len + 1):
-        #     print("---|", end="")
-        # print()
         print("= |")
         print("|" + ((letters_len + 1) * "---|"))
-        # print("---|", end="")
-        # print()
         while number >> letters_len == 0:
             print("|", end=" ")
             for i in range(letters_len):
-                # print(self.letters[i].name, end=" ")
-                # print("{0:03b}".format((1 << (i - 1)) & number), end=" ")
                 self.letters[i].value = 1 if (
                     (1 << ((letters_len - 1) - i)) & number) else 0
-                # print(self.letters[i - 1].value, end=" | ")
                 print(self.letters[i].value, end=" | ")
             print(self.value(), "|")
             number += 1
