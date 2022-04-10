@@ -2,10 +2,10 @@ import sys
 from ast import Ast
 
 
-def eval_formula(str: str) -> bool:
+def eval_formula(formula: str) -> bool:
     try:
         tree = Ast()
-        tree.parse_expression(str)
+        tree.parse_expression(formula)
         # tree.print()
         return bool(tree.value())
     except Exception as e:
