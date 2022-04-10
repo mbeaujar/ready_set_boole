@@ -24,7 +24,6 @@ class BinOp:
             return self.left.get_value() == self.right.get_value()
         elif self.operator == '^':
             return self.left.get_value() ^ self.right.get_value()
-        # elif self.operator == '!':
 
 
 class Letter:
