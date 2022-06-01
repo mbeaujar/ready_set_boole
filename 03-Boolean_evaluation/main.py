@@ -6,7 +6,7 @@ def eval_formula(formula: str) -> bool:
     try:
         tree = Ast()
         tree.parse_expression(formula)
-        # tree.print()
+        tree.print()
         return bool(tree.value())
     except Exception as e:
         print(e)
